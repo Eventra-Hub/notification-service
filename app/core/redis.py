@@ -13,3 +13,4 @@ async def close_redis():
     if client:
         await client.aclose()
         client = None
+
