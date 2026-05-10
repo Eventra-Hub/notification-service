@@ -25,9 +25,9 @@ class NotificationOut(BaseModel):
     user_id:           str
     message:           str
     notification_type: str
-    event_id:          Optional[str]
-    timestamp:         int
-    read:              bool
+    event_id:          Optional[str] = None
+    timestamp:         int = 0
+    read:              bool = False
 
 class SendResponse(BaseModel):
     status:          str  

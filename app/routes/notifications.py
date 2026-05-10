@@ -25,7 +25,11 @@ async def send_notification(body: NotificationIn):
 #  GET /notifications/user/{user_id} (Returns the user's notification history from Redis, newest first)
 @router.get("/user/{user_id}", response_model=list[NotificationOut])
 async def get_user_notifications(user_id: str):
-    return await get_notifications(user_id)
+    try:
+        return await get_notifications(user_id)
+    except Exception as e:
+        logger.exception("get_notifications failed for user %s: %s", user_id, e)
+        raise HTTPException(status_code=500, detail=f"Failed to fetch notifications: {e}")
 
 #  GET /notifications/health 
 @router.get("/health")

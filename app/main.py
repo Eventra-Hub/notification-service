@@ -1,5 +1,7 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.core.config import settings
 from app.core.redis import connect_redis, close_redis, client
@@ -24,6 +26,17 @@ app = FastAPI(
     title=settings.SERVICE_NAME,
     version="1.0.0",
     lifespan=lifespan,
+)
+
+cors_origins = os.getenv("CORS_ORIGINS", "*")
+allow_origins = [o.strip() for o in cors_origins.split(",")] if cors_origins != "*" else ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allow_origins,
+    allow_credentials=False if allow_origins == ["*"] else True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(router, prefix="/notifications", tags=["notifications"])
